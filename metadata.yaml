@@ -1,48 +1,40 @@
-name: job-template
-description: Template for SGNL JavaScript jobs - replace with your job description
+name: slack-revoke-session
+description: Revoke all active sessions for a Slack user by email address
 
 # Input parameters for web form generation
 inputs:
-  target:
-    type: text
-    description: Target resource identifier (e.g., user email, group ID)
+  userEmail:
+    type: email
+    description: The email address of the Slack user whose sessions should be revoked
     required: true
     validation:
       min: 1
-      max: 100
-
-  action:
-    type: text
-    description: Action to perform on the target resource
-    required: true
-    validation:
-      min: 1
-      max: 50
-
-  options:
-    type: array
-    description: Additional options for the operation
-    required: false
-    item_type: text
-    validation:
-      max: 10
-
-  dry_run:
-    type: boolean
-    description: Preview changes without executing them
-    required: false
-    default: false
+      max: 254
 
 # Expected output structure
 outputs:
-  status:
+  userEmail:
     type: text
-    description: Operation result (success, failed, recovered, etc.)
+    description: The email address that was processed
 
-  target:
+  userId:
     type: text
-    description: The target resource that was processed
+    description: The Slack user ID that was resolved from the email
 
-  processed_at:
+  sessionsRevoked:
+    type: boolean
+    description: Whether the sessions were successfully revoked
+
+  revokedAt:
     type: datetime
-    description: When the operation completed (ISO 8601)
+    description: When the revocation completed (ISO 8601)
+
+# Required secrets (configured at deployment time)
+secrets:
+  - SLACK_TOKEN
+
+# Runtime configuration
+runtime:
+  type: nodejs-22
+  timeout: 30s
+  memory: 128Mi

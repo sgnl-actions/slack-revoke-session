@@ -1,7 +1,7 @@
 {
-  "name": "@sgnl/job-template",
+  "name": "@sgnl/slack-revoke-session",
   "version": "1.0.0",
-  "description": "Template for SGNL JavaScript jobs",
+  "description": "Revoke all active sessions for a Slack user by email address",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "validate": "node scripts/validate-metadata.js",
     "dev": "node scripts/dev-runner.js"
   },
-  "keywords": ["sgnl", "job", "template", "identity", "security"],
+  "keywords": ["sgnl", "slack", "session", "revoke", "security"],
   "author": "SGNL Engineering",
   "license": "MIT",
   "dependencies": {

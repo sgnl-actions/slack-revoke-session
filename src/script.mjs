@@ -120,13 +120,13 @@ export default {
 
       console.log(`Processing user email: ${userEmail}`);
 
-      if (!context.secrets?.SLACK_TOKEN) {
-        throw new FatalError('Missing required secret: SLACK_TOKEN');
+      if (!context.secrets?.BEARER_AUTH_TOKEN) {
+        throw new FatalError('Missing required secret: BEARER_AUTH_TOKEN');
       }
 
       // Step 1: Look up user by email
       console.log(`Looking up Slack user by email: ${userEmail}`);
-      const user = await lookupUserByEmail(userEmail, context.secrets.SLACK_TOKEN);
+      const user = await lookupUserByEmail(userEmail, context.secrets.BEARER_AUTH_TOKEN);
       console.log(`Found user with ID: ${user.id}`);
 
       // Add delay between API calls to avoid rate limiting
@@ -134,7 +134,7 @@ export default {
 
       // Step 2: Reset user sessions
       console.log(`Resetting sessions for user: ${user.id}`);
-      await resetUserSessions(user.id, context.secrets.SLACK_TOKEN);
+      await resetUserSessions(user.id, context.secrets.BEARER_AUTH_TOKEN);
 
       const result = {
         userEmail,

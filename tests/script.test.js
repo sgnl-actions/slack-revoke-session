@@ -6,7 +6,7 @@ describe('Slack Revoke Session Script', () => {
       ENVIRONMENT: 'test'
     },
     secrets: {
-      SLACK_TOKEN: 'xoxb-test-token'
+      BEARER_AUTH_TOKEN: 'xoxb-test-token'
     },
     outputs: {}
   };
@@ -34,7 +34,7 @@ describe('Slack Revoke Session Script', () => {
         .rejects.toThrow('Invalid email format');
     });
 
-    test('should throw error for missing SLACK_TOKEN', async () => {
+    test('should throw error for missing BEARER_AUTH_TOKEN', async () => {
       const params = {
         userEmail: 'user@example.com'
       };
@@ -45,7 +45,7 @@ describe('Slack Revoke Session Script', () => {
       };
 
       await expect(script.invoke(params, contextWithoutToken))
-        .rejects.toThrow('Missing required secret: SLACK_TOKEN');
+        .rejects.toThrow('Missing required secret: BEARER_AUTH_TOKEN');
     });
 
     test('should validate empty userEmail', async () => {

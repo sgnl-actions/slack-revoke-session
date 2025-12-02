@@ -46,7 +46,15 @@ outputs:
 
 # Required secrets (configured at deployment time)
 secrets:
-  - SLACK_TOKEN
+  BEARER_AUTH_TOKEN:
+    description: Slack Bot User OAuth Token with required scopes
+    required: true
+
+# Environment variables
+environment:
+  ADDRESS:
+    description: Base URL for Slack API
+    default: "https://slack.com"
 
 # Runtime configuration
 runtime:

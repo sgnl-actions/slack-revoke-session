@@ -2,11 +2,11 @@ import script from '../src/script.mjs';
 
 describe('Slack Revoke Session Script', () => {
   const mockContext = {
-    env: {
-      ENVIRONMENT: 'test'
+    environment: {
+      ADDRESS: 'https://slack.com'
     },
     secrets: {
-      SLACK_TOKEN: 'xoxb-test-token'
+      BEARER_AUTH_TOKEN: 'xoxb-test-token'
     },
     outputs: {}
   };
@@ -34,7 +34,7 @@ describe('Slack Revoke Session Script', () => {
         .rejects.toThrow('Invalid email format');
     });
 
-    test('should throw error for missing SLACK_TOKEN', async () => {
+    test('should throw error for missing BEARER_AUTH_TOKEN', async () => {
       const params = {
         userEmail: 'user@example.com'
       };
@@ -45,7 +45,7 @@ describe('Slack Revoke Session Script', () => {
       };
 
       await expect(script.invoke(params, contextWithoutToken))
-        .rejects.toThrow('Missing required secret: SLACK_TOKEN');
+        .rejects.toThrow('No authentication configured');
     });
 
     test('should validate empty userEmail', async () => {
@@ -63,9 +63,12 @@ describe('Slack Revoke Session Script', () => {
 
   describe('error handler', () => {
     test('should re-throw error for framework to handle', async () => {
+      const error = new Error('Network timeout');
+      error.statusCode = 500;
+
       const params = {
         userEmail: 'user@example.com',
-        error: new Error('Network timeout')
+        error: error
       };
 
       await expect(script.error(params, mockContext))

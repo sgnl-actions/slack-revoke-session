@@ -1,3 +1,5 @@
+import { getBaseUrl, getAuthorizationHeader } from '@sgnl-actions/utils';
+
 class RetryableError extends Error {
   constructor(message) {
     super(message);
@@ -12,14 +14,40 @@ class FatalError extends Error {
   }
 }
 
-async function lookupUserByEmail(email, token) {
-  const url = new URL('https://slack.com/api/users.lookupByEmail');
+function parseDuration(durationStr) {
+  if (!durationStr) return 100; // default 100ms
+
+  const match = durationStr.match(/^(\d+(?:\.\d+)?)(ms|s|m|h)?$/i);
+  if (!match) {
+    console.warn(`Invalid duration format: ${durationStr}, using default 100ms`);
+    return 100;
+  }
+
+  const value = parseFloat(match[1]);
+  const unit = (match[2] || 'ms').toLowerCase();
+
+  switch (unit) {
+    case 'ms':
+      return value;
+    case 's':
+      return value * 1000;
+    case 'm':
+      return value * 60 * 1000;
+    case 'h':
+      return value * 60 * 60 * 1000;
+    default:
+      return value;
+  }
+}
+
+async function lookupUserByEmail(email, authHeader, baseUrl = 'https://slack.com') {
+  const url = new URL(`${baseUrl.replace(/\/$/, '')}/api/users.lookupByEmail`);
   url.searchParams.append('email', email);
 
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`,
+      'Authorization': authHeader,
       'Content-Type': 'application/json'
     }
   });
@@ -52,13 +80,13 @@ async function lookupUserByEmail(email, token) {
   return data.user;
 }
 
-async function resetUserSessions(userId, token) {
-  const url = 'https://slack.com/api/admin.users.session.reset';
+async function resetUserSessions(userId, authHeader, baseUrl = 'https://slack.com') {
+  const url = `${baseUrl.replace(/\/$/, '')}/api/admin.users.session.reset`;
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`,
+      'Authorization': authHeader,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -110,31 +138,52 @@ function validateInputs(params) {
 }
 
 export default {
+  /**
+   * Main execution handler - revokes all active sessions for a Slack user by email
+   * @param {Object} params - Job input parameters
+   * @param {string} params.userEmail - Email address of the Slack user (required)
+   * @param {string} params.delay - Optional delay between API calls (e.g., 100ms, 1s)
+   * @param {string} params.address - Optional Slack API base URL
+   * @param {Object} context - Execution context with secrets and environment
+   * @param {string} context.environment.ADDRESS - Default Slack API base URL
+   *
+   * The configured auth type will determine which of the following environment variables and secrets are available
+   * @param {string} context.secrets.BEARER_AUTH_TOKEN
+   *
+   * @param {string} context.secrets.OAUTH2_AUTHORIZATION_CODE_ACCESS_TOKEN
+   *
+   * @returns {Promise<Object>} Action result
+   */
   invoke: async (params, context) => {
     console.log('Starting Slack Revoke Session action');
 
     try {
       validateInputs(params);
 
-      const { userEmail } = params;
+      const { userEmail, delay } = params;
 
       console.log(`Processing user email: ${userEmail}`);
 
-      if (!context.secrets?.SLACK_TOKEN) {
-        throw new FatalError('Missing required secret: SLACK_TOKEN');
-      }
+      const authHeader = await getAuthorizationHeader(context);
+
+      // Get base URL using utility function
+      const baseUrl = getBaseUrl(params, context);
+
+      // Parse delay duration
+      const delayMs = parseDuration(delay);
 
       // Step 1: Look up user by email
       console.log(`Looking up Slack user by email: ${userEmail}`);
-      const user = await lookupUserByEmail(userEmail, context.secrets.SLACK_TOKEN);
+      const user = await lookupUserByEmail(userEmail, authHeader, baseUrl);
       console.log(`Found user with ID: ${user.id}`);
 
       // Add delay between API calls to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 100));
+      console.log(`Waiting ${delayMs}ms before resetting sessions`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
 
       // Step 2: Reset user sessions
       console.log(`Resetting sessions for user: ${user.id}`);
-      await resetUserSessions(user.id, context.secrets.SLACK_TOKEN);
+      await resetUserSessions(user.id, authHeader, baseUrl);
 
       const result = {
         userEmail,
@@ -159,9 +208,6 @@ export default {
 
   error: async (params, _context) => {
     const { error } = params;
-    console.error(`Error handler invoked: ${error?.message}`);
-
-    // Re-throw to let framework handle retries
     throw error;
   },
 

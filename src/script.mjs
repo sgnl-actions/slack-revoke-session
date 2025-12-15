@@ -1,4 +1,4 @@
-import { getBaseUrl, getAuthorizationHeader } from '@sgnl-actions/utils';
+import { getBaseURL, getAuthorizationHeader, resolveJSONPathTemplates} from '@sgnl-actions/utils';
 
 class RetryableError extends Error {
   constructor(message) {
@@ -157,17 +157,25 @@ export default {
   invoke: async (params, context) => {
     console.log('Starting Slack Revoke Session action');
 
-    try {
-      validateInputs(params);
+    const jobContext = context.data || {};
 
-      const { userEmail, delay } = params;
+    // Resolve JSONPath templates in params
+    const { result: resolvedParams, errors } = resolveJSONPathTemplates(params, jobContext);
+    if (errors.length > 0) {
+     console.warn('Template resolution errors:', errors);
+    }
+
+    try {
+      validateInputs(resolvedParams);
+
+      const { userEmail, delay } = resolvedParams;
 
       console.log(`Processing user email: ${userEmail}`);
 
       const authHeader = await getAuthorizationHeader(context);
 
       // Get base URL using utility function
-      const baseUrl = getBaseUrl(params, context);
+      const baseUrl = getBaseURL(resolvedParams, context);
 
       // Parse delay duration
       const delayMs = parseDuration(delay);

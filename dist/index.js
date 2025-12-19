@@ -478,8 +478,8 @@ function parseDuration(durationStr) {
 }
 
 async function lookupUserByEmail(email, authHeader, baseUrl = 'https://slack.com') {
-  const url = new URL(`${baseUrl.replace(/\/$/, '')}/api/users.lookupByEmail`);
-  url.searchParams.append('email', email);
+  const encodedEmail = encodeURIComponent(email);
+  const url = `${baseUrl.replace(/\/$/, '')}/api/users.lookupByEmail?email=${encodedEmail}`;
 
   const response = await fetch(url, {
     method: 'GET',

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sgnl-actions/schemas/main/metadata.schema.json
 name: slack-revoke-session
 description: Revoke all active sessions for a Slack user by email address
 

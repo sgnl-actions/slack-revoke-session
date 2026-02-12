@@ -1,4 +1,5 @@
 import script from '../src/script.mjs';
+import { SGNL_USER_AGENT } from '@sgnl-actions/utils';
 
 describe('Slack Revoke Session Script', () => {
   const mockContext = {
@@ -55,6 +56,38 @@ describe('Slack Revoke Session Script', () => {
 
       await expect(script.invoke(params, mockContext))
         .rejects.toThrow('Invalid or missing userEmail parameter');
+    });
+
+    test('should include User-Agent header in all API calls', async () => {
+      const params = {
+        userEmail: 'user@example.com'
+      };
+
+      const capturedRequests = [];
+      global.fetch = async (url, options) => {
+        capturedRequests.push({ url, options });
+
+        // Lookup call
+        if (url.includes('lookupByEmail')) {
+          return {
+            ok: true,
+            json: async () => ({ ok: true, user: { id: 'U123' } })
+          };
+        }
+
+        // Reset sessions call
+        return {
+          ok: true,
+          json: async () => ({ ok: true })
+        };
+      };
+
+      await script.invoke(params, mockContext);
+
+      expect(capturedRequests.length).toBe(2);
+      for (const req of capturedRequests) {
+        expect(req.options.headers['User-Agent']).toBe(SGNL_USER_AGENT);
+      }
     });
 
     // Note: Testing actual Slack API calls would require mocking fetch

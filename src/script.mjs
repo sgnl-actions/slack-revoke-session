@@ -1,4 +1,4 @@
-import { getBaseURL, getAuthorizationHeader} from '@sgnl-actions/utils';
+import { getBaseURL, getAuthorizationHeader, SGNL_USER_AGENT} from '@sgnl-actions/utils';
 
 class RetryableError extends Error {
   constructor(message) {
@@ -48,7 +48,8 @@ async function lookupUserByEmail(email, authHeader, baseUrl = 'https://slack.com
     method: 'GET',
     headers: {
       'Authorization': authHeader,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'User-Agent': SGNL_USER_AGENT
     }
   });
 
@@ -87,7 +88,8 @@ async function resetUserSessions(userId, authHeader, baseUrl = 'https://slack.co
     method: 'POST',
     headers: {
       'Authorization': authHeader,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'User-Agent': SGNL_USER_AGENT
     },
     body: JSON.stringify({
       user_id: userId

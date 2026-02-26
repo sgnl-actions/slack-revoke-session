@@ -1,0 +1,17 @@
+HTTP/2 200
+date: Thu, 26 Feb 2026 19:21:30 GMT
+server: Apache
+vary: Accept-Encoding
+x-slack-req-id: 37b9cfa6ddec3e799f789733261ac873
+x-content-type-options: nosniff
+pragma: no-cache
+cache-control: private, no-cache, no-store, must-revalidate
+expires: Sat, 26 Jul 1997 05:00:00 GMT
+content-type: application/json; charset=utf-8
+x-slack-failure: not_allowed_token_type
+access-control-expose-headers: x-slack-req-id, retry-after
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+referrer-policy: no-referrer
+access-control-allow-origin: *
+
+{"ok":false,"error":"not_allowed_token_type","warning":"missing_charset","response_metadata":{"warnings":["missing_charset"]}}

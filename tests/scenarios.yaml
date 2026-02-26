@@ -1,0 +1,84 @@
+# Slack Revoke Session Test Scenarios
+action:
+  params:
+    userEmail: test.user@example.com
+    delay: 100ms
+  context:
+    secrets:
+      BEARER_AUTH_TOKEN: xoxb-test-token-123456789012-1234567890123-test1234567890123456
+    environment:
+      ADDRESS: https://slack.com
+
+scenarios:
+  - name: successfully revoke sessions for user
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=test.user%40example.com
+        fixture: fixtures/200-user-lookup.http
+      - request:
+          method: POST
+          url: https://slack.com/api/admin.users.session.reset
+        fixture: fixtures/200-session-reset.http
+    invoke:
+      returns:
+        userEmail: test.user@example.com
+        userId: U1234567890
+        sessionsRevoked: true
+        revokedAt: "2026-02-26T10:30:00.000Z"
+
+  - name: user not found by email
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=test.user%40example.com
+        fixture: fixtures/200-user-not-found.http
+    invoke:
+      throws: "User not found with email: test.user@example.com"
+
+  - name: invalid authentication token
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=test.user%40example.com
+        fixture: fixtures/200-invalid-auth.http
+    invoke:
+      throws: "Invalid or missing authentication token"
+
+  - name: missing admin scope for session reset
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=test.user%40example.com
+        fixture: fixtures/200-user-lookup.http
+      - request:
+          method: POST
+          url: https://slack.com/api/admin.users.session.reset
+        fixture: fixtures/200-missing-scope.http
+    invoke:
+      throws: "Token missing required scope: admin.users:write"
+
+  - name: rate limit exceeded
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=test.user%40example.com
+        fixture: fixtures/429-rate-limit.http
+    invoke:
+      throws: "Slack API rate limit exceeded"
+
+  - name: server error - should retry
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=test.user%40example.com
+        fixture: fixtures/500-internal-error.http
+    invoke:
+      throws: "Slack API error: 500"
+
+  - name: invalid email format
+    action:
+      params:
+        userEmail: invalid-email
+    invoke:
+      throws: "Invalid email format"

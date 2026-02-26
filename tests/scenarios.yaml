@@ -1,0 +1,59 @@
+# Slack Revoke Session Test Scenarios
+action:
+  params:
+    userEmail: user@example.com
+  context:
+    secrets:
+      BEARER_AUTH_TOKEN: xoxb-test-token
+    environment:
+      ADDRESS: https://slack.com
+
+scenarios:
+
+  # ── lookup ────────────────────────────────────────────────────────────────
+
+  - name: user not found
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-users-not-found.http
+    invoke:
+      throws: "User not found with email"
+
+  - name: not allowed token type on session reset
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-user-lookup.http
+      - request:
+          method: POST
+          url: https://slack.com/api/admin.users.session.reset
+        fixture: fixtures/200-not-allowed-token-type.http
+    invoke:
+      throws: "Slack API error: not_allowed_token_type"
+
+  # ── input validation ──────────────────────────────────────────────────────
+
+  - name: missing userEmail
+    params:
+      userEmail: ~
+    steps: []
+    invoke:
+      throws: "Invalid or missing userEmail parameter"
+
+  - name: invalid email format
+    params:
+      userEmail: not-an-email
+    steps: []
+    invoke:
+      throws: "Invalid email format"
+
+  - name: missing auth token
+    context:
+      secrets:
+        BEARER_AUTH_TOKEN: ~
+    steps: []
+    invoke:
+      throws: "No authentication configured"

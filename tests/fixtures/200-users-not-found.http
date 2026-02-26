@@ -1,0 +1,34 @@
+HTTP/2 200 
+date: Thu, 26 Feb 2026 19:16:39 GMT
+server: Apache
+vary: Accept-Encoding
+x-slack-req-id: af464ede3961e4a8a77180652c2436f4
+x-content-type-options: nosniff
+x-xss-protection: 0
+pragma: no-cache
+cache-control: private, no-cache, no-store, must-revalidate
+expires: Sat, 26 Jul 1997 05:00:00 GMT
+content-type: application/json; charset=utf-8
+x-slack-failure: users_not_found
+x-accepted-oauth-scopes: users:read.email
+x-oauth-scopes: chat:write,incoming-webhook,users:read.email,users:read
+access-control-expose-headers: x-slack-req-id, retry-after
+access-control-allow-headers: slack-route, x-slack-version-ts, x-b3-traceid, x-b3-spanid, x-b3-parentspanid, x-b3-sampled, x-b3-flags
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+referrer-policy: no-referrer
+x-slack-unique-id: aaCcFklX8c7I3deIZKD74QAAEBE
+x-slack-backend: r
+access-control-allow-origin: *
+content-length: 38
+via: 1.1 slack-prod.tinyspeck.com, envoy-www-iad-yooooqzd,envoy-edge-pdx-lltofqse
+x-envoy-attempt-count: 1
+x-envoy-upstream-service-time: 137
+x-backend: api_normal
+x-server: slack-www-hhvm-api-iad-9y59nz3vcx18
+x-slack-shared-secret-outcome: no-match
+x-edge-backend: envoy-www
+timing-allow-origin: *
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, quic=":443"; ma=2592000
+x-slack-edge-shared-secret-outcome: no-match
+
+{"ok":false,"error":"users_not_found"}

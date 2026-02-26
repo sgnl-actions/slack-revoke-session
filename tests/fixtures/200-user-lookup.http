@@ -1,0 +1,19 @@
+HTTP/2 200
+date: Thu, 26 Feb 2026 18:52:05 GMT
+server: Apache
+vary: Accept-Encoding
+x-slack-req-id: 0de09c5ebbcc7aafd269e600d8a041d3
+x-content-type-options: nosniff
+x-xss-protection: 0
+pragma: no-cache
+cache-control: private, no-cache, no-store, must-revalidate
+expires: Sat, 26 Jul 1997 05:00:00 GMT
+content-type: application/json; charset=utf-8
+x-accepted-oauth-scopes: users:read.email
+x-oauth-scopes: chat:write,incoming-webhook,users:read.email,users:read
+access-control-expose-headers: x-slack-req-id, retry-after
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+referrer-policy: no-referrer
+access-control-allow-origin: *
+
+{"ok":true,"user":{"id":"U123456","name":"testuser","is_bot":false,"updated":1771861745,"is_app_user":false,"team_id":"T0TESTTEAM","deleted":false,"color":"50a0cf","is_email_confirmed":true,"real_name":"Test User","tz":"America/Los_Angeles","tz_label":"Pacific Standard Time","tz_offset":-28800,"is_admin":false,"is_owner":false,"is_primary_owner":false,"is_restricted":false,"is_ultra_restricted":false,"who_can_share_contact_card":"EVERYONE","profile":{"real_name":"Test User","display_name":"testuser","avatar_hash":"g1bedc954551","real_name_normalized":"Test User","display_name_normalized":"testuser","image_24":"https://secure.gravatar.com/avatar/abc123.jpg?s=24","image_32":"https://secure.gravatar.com/avatar/abc123.jpg?s=32","image_48":"https://secure.gravatar.com/avatar/abc123.jpg?s=48","image_72":"https://secure.gravatar.com/avatar/abc123.jpg?s=72","image_192":"https://secure.gravatar.com/avatar/abc123.jpg?s=192","image_512":"https://secure.gravatar.com/avatar/abc123.jpg?s=512","first_name":"Test","last_name":"User","team":"T0TESTTEAM","email":"user@example.com","title":"","phone":"","skype":"","status_text":"","status_text_canonical":"","status_emoji":"","status_emoji_display_info":[],"status_expiration":0}}}

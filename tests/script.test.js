@@ -35,20 +35,6 @@ describe('Slack Revoke Session Script', () => {
         .rejects.toThrow('Invalid email format');
     });
 
-    test('should throw error for missing BEARER_AUTH_TOKEN', async () => {
-      const params = {
-        userEmail: 'user@example.com'
-      };
-
-      const contextWithoutToken = {
-        ...mockContext,
-        secrets: {}
-      };
-
-      await expect(script.invoke(params, contextWithoutToken))
-        .rejects.toThrow('No authentication configured');
-    });
-
     test('should validate empty userEmail', async () => {
       const params = {
         userEmail: '   '

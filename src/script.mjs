@@ -168,6 +168,11 @@ export default {
 
       const authHeader = await getAuthorizationHeader(context);
 
+      // Validate authentication is configured
+      if (!authHeader || authHeader.trim().length === 0) {
+        throw new FatalError('No authentication configured. Slack API requires bearer token or OAuth2 access token');
+      }
+
       // Get base URL using utility function
       const baseUrl = getBaseURL(params, context);
 

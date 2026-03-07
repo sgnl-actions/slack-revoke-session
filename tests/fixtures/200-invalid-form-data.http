@@ -1,0 +1,31 @@
+HTTP/2 200 
+date: Fri, 06 Mar 2026 23:30:36 GMT
+server: Apache
+vary: Accept-Encoding
+x-slack-req-id: bc6cbc976621ad9f6e03e3ecc375798a
+x-content-type-options: nosniff
+x-xss-protection: 0
+x-robots-tag: noindex,nofollow
+pragma: no-cache
+cache-control: private, no-cache, no-store, must-revalidate
+expires: Sat, 26 Jul 1997 05:00:00 GMT
+content-type: application/json; charset=utf-8
+x-slack-failure: invalid_form_data
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+referrer-policy: no-referrer
+x-slack-unique-id: aatjnFtn1xjquWweFfzglAAAAAQ
+x-slack-backend: r
+access-control-allow-origin: *
+content-length: 40
+via: 1.1 slack-prod.tinyspeck.com, envoy-www-iad-nwmxvxpd,envoy-edge-pdx-wilujukp
+x-envoy-attempt-count: 1
+x-envoy-upstream-service-time: 59
+x-backend: api_normal
+x-server: slack-www-hhvm-api-iad-qhhd50a0huab
+x-slack-shared-secret-outcome: no-match
+x-edge-backend: envoy-www
+timing-allow-origin: *
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, quic=":443"; ma=2592000
+x-slack-edge-shared-secret-outcome: no-match
+
+{"ok":false,"error":"invalid_form_data"}

@@ -52,6 +52,74 @@ scenarios:
     invoke:
       throws: "Slack API error: not_allowed_token_type"
 
+  # ── API error scenarios ───────────────────────────────────────────────────
+
+  - name: invalid auth during user lookup
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-invalid-auth.http
+    invoke:
+      throws: "Invalid or missing authentication token"
+
+  - name: invalid auth during session reset
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-user-lookup.http
+      - request:
+          method: POST
+          url: https://slack.com/api/admin.users.session.reset
+        fixture: fixtures/200-invalid-auth.http
+    invoke:
+      throws: "Invalid or missing authentication token"
+
+  - name: malformed JSON during user lookup
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-invalid-json.http
+    invoke:
+      throws: "Slack API error: invalid_json"
+
+  - name: malformed JSON during session reset
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-user-lookup.http
+      - request:
+          method: POST
+          url: https://slack.com/api/admin.users.session.reset
+        fixture: fixtures/200-invalid-json.http
+    invoke:
+      throws: "Slack API error: invalid_json"
+
+  - name: invalid form data during user lookup
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-invalid-form-data.http
+    invoke:
+      throws: "Slack API error: invalid_form_data"
+
+  - name: invalid form data during session reset
+    steps:
+      - request:
+          method: GET
+          url: https://slack.com/api/users.lookupByEmail?email=user%40example.com
+        fixture: fixtures/200-user-lookup.http
+      - request:
+          method: POST
+          url: https://slack.com/api/admin.users.session.reset
+        fixture: fixtures/200-invalid-form-data.http
+    invoke:
+      throws: "Slack API error: invalid_form_data"
+
   # ── input validation ──────────────────────────────────────────────────────
 
   - name: missing userEmail

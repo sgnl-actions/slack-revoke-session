@@ -156,6 +156,12 @@ const params = {
 
 Use `npm run dev` to test your script locally with mock data. Update `scripts/dev-runner.js` to customize the test parameters.
 
+```bash
+npm run dev -- \
+  --params '{"userEmail":"email"}' \
+  --secrets '{"BEARER_AUTH_TOKEN":"your-new-token"}'
+```
+
 ## Deployment
 
 1. **Ensure tests pass**: `npm test`

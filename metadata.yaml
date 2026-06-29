@@ -62,7 +62,6 @@ environment:
   ADDRESS:
     type: text
     description: Base URL for Slack API
-    default: "https://slack.com"
 
 requires_one_of:
   - ["secrets.BEARER_AUTH_TOKEN"]
